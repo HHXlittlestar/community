@@ -1,8 +1,8 @@
 package com.huhx.community.provider;
 
 import com.alibaba.fastjson.JSON;
-import com.huhx.community.pojo.AccessTokenDTO;
-import com.huhx.community.pojo.GithubUser;
+import com.huhx.community.dto.AccessTokenDTO;
+import com.huhx.community.dto.GithubUser;
 import okhttp3.*;
 import org.springframework.stereotype.Component;
 

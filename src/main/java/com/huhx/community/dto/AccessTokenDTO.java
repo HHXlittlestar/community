@@ -1,4 +1,4 @@
-package com.huhx.community.pojo;
+package com.huhx.community.dto;
 
 import org.springframework.stereotype.Component;
 

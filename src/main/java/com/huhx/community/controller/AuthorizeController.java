@@ -1,7 +1,9 @@
 package com.huhx.community.controller;
 
-import com.huhx.community.pojo.AccessTokenDTO;
-import com.huhx.community.pojo.GithubUser;
+import com.huhx.community.dto.AccessTokenDTO;
+import com.huhx.community.dto.GithubUser;
+import com.huhx.community.mapper.UserMapper;
+import com.huhx.community.model.User;
 import com.huhx.community.provider.GithubProvider;
 import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +12,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import java.util.UUID;
 
 @Controller
 public class AuthorizeController {
@@ -19,6 +23,8 @@ public class AuthorizeController {
     private GithubProvider githubProvider;
     @Autowired
     private AccessTokenDTO accessTokenDTO;
+    @Autowired
+    private UserMapper userMapper;
     @Value("${github.client.id}")
     private String clientID;
     @Value("${github.client.secret}")
@@ -28,7 +34,8 @@ public class AuthorizeController {
 
     @GetMapping("/callback")
     public String callback(@RequestParam(name = "code") String code,
-                           @RequestParam(name = "state") String state){
+                           @RequestParam(name = "state") String state,
+                           HttpServletRequest request){
         HashMap<String, String> map = new HashMap<>();
         map.put("client_id", clientID);
         map.put("client_secret", clientSecret);
@@ -43,8 +50,20 @@ public class AuthorizeController {
             e.printStackTrace();
         }
         String accessToken = githubProvider.getAccessToken(accessTokenDTO);
-        GithubUser user = githubProvider.getUser(accessToken);
-        System.out.println(user.getName());
-        return "index";
+        GithubUser githubUser = githubProvider.getUser(accessToken);
+
+        if(githubUser != null){
+            User user = new User();
+            user.setName(githubUser.getName());
+            user.setAccountID(String.valueOf(githubUser.getID()));
+            user.setToken(UUID.randomUUID().toString());
+            user.setGmtCreat(System.currentTimeMillis());
+            user.setGmtModify(user.getGmtCreat());
+            userMapper.insert(user);
+            request.getSession().setAttribute("user", githubUser);
+            return "redirect:/";
+        }else{
+            return "redirect:/";
+        }
     }
 }
