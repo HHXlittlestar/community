@@ -12,11 +12,7 @@ public interface QuestionMapper {
     @Insert("insert into question(title, description, gmt_creat, gmt_modify, creator, tag) values(#{title}, #{description}, #{gmtCreat}, #{gmtModify}, #{creator}, #{tag})")
     void insert(Question question);
 
-    @Select("select * from question limit #{startIndex}, #{range}")
-    @Results()
-    List<Question> findByPage(@Param("startIndex")int startIndex, @Param("range")int range);
-
-    @Select("select * from question")
+    @Select("select * from question limit #{startIndex}, #{size}")
     @Results(id = "map",value = {
             @Result(column = "gmt_creat", property = "gmtCreat"),
             @Result(column = "gmt_modify", property = "gmtModify"),
@@ -24,5 +20,8 @@ public interface QuestionMapper {
             @Result(column = "comment_count", property = "commentCount"),
             @Result(column = "like_count", property = "likeCount"),
     })
-    List<Question> findAll();
+    List<Question> findByPage(@Param("startIndex")int startIndex, @Param("size")int size);
+
+    @Select("select count(*) from question")
+    int findAll();
 }

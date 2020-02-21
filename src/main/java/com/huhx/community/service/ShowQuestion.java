@@ -1,5 +1,6 @@
 package com.huhx.community.service;
 
+import com.huhx.community.dto.PageInfoDTO;
 import com.huhx.community.dto.QuestionDTO;
 import com.huhx.community.mapper.QuestionMapper;
 import com.huhx.community.mapper.UserMapper;
@@ -20,9 +21,11 @@ public class ShowQuestion {
     @Autowired
     private QuestionMapper questionMapper;
 
-    //完成QuestionDTO对象的封装
-    public List<QuestionDTO> findAllQuestion(){
-        List<Question> questions = questionMapper.findAll();
+    //完成PageInfoDTO对象的封装
+    public PageInfoDTO findQuestionByPage(int page, int size){
+        int starIndex = (page - 1) * size;
+        List<Question> questions = questionMapper.findByPage(starIndex, size);
+        int totalCount = questionMapper.findAll();
         List<QuestionDTO> questionDTOs = new LinkedList<>();
         for (Question question : questions) {
             User user = userMapper.findById(question.getCreator());
@@ -31,6 +34,10 @@ public class ShowQuestion {
             questionDTO.setUser(user);
             questionDTOs.add(questionDTO);
         }
-        return questionDTOs;
+        PageInfoDTO pageInfoDTO = new PageInfoDTO();
+        pageInfoDTO.setQuestions(questionDTOs);
+
+        pageInfoDTO.setPageInfo(totalCount, page, size);
+        return pageInfoDTO;
     }
 }

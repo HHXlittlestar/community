@@ -7,8 +7,8 @@
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="css/index.css">
-    <script src="js/bootstrap.min.js"></script>
     <script src="js/jquery-3.4.1.js"></script>
+    <script src="js/bootstrap.min.js"></script>
 
 </head>
 <body style="background: #efefef">
@@ -58,7 +58,8 @@
                 <h2><span class="glyphicon glyphicon-list" aria-hidden="true"></span>发现</h2>
                 <hr>
 
-                <div class="media" th:each="question : ${questions}">
+                <!--这里是要循环展示的数据-->
+                <div class="media" th:each="question : ${pageInfo.questions}">
                     <div class="media-left media-middle">
                         <a href="#">
                             <img class="media-object img-rounded"
@@ -76,6 +77,33 @@
                         </span>
                     </div>
                 </div>
+                <nav aria-label="Page navigation" style="float: right">
+                    <ul class="pagination">
+                        <li th:if="${pageInfo.showFirstPage}">
+                            <a th:href="@{/(page=1)}" aria-label="First">
+                                <span aria-hidden="true">&laquo;&laquo;</span>
+                            </a>
+                        </li>
+                        <li th:if="${pageInfo.showPre}">
+                            <a th:href="@{/(page=${pageInfo.page - 1})}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <li th:each="page : ${pageInfo.pages}" th:class="${pageInfo.page == page} ? 'active' : ''">
+                            <a th:href="@{/(page=${page})}" th:text="${page}"></a>
+                        </li>
+                        <li th:if="${pageInfo.showNext}">
+                            <a th:href="@{/(page=${pageInfo.page + 1})}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                        <li th:if="${pageInfo.showEndPage}">
+                            <a th:href="@{/(page=${pageInfo.totalPage})}" aria-label="End">
+                                <span aria-hidden="true">&raquo;&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
             </div>
 
             <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
