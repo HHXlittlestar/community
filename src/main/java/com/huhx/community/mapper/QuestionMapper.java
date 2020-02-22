@@ -13,15 +13,28 @@ public interface QuestionMapper {
     void insert(Question question);
 
     @Select("select * from question limit #{startIndex}, #{size}")
-    @Results(id = "map",value = {
+    @Results(value = {
             @Result(column = "gmt_creat", property = "gmtCreat"),
             @Result(column = "gmt_modify", property = "gmtModify"),
             @Result(column = "view_count", property = "viewCount"),
             @Result(column = "comment_count", property = "commentCount"),
             @Result(column = "like_count", property = "likeCount"),
     })
-    List<Question> findByPage(@Param("startIndex")int startIndex, @Param("size")int size);
+    List<Question> findAllQuestionByPage(@Param("startIndex")int startIndex, @Param("size")int size);
 
     @Select("select count(*) from question")
     int findAll();
+
+    @Select("select * from question where creator = #{userId} limit #{startIndex}, #{size}")
+    @Results(value = {
+            @Result(column = "gmt_creat", property = "gmtCreat"),
+            @Result(column = "gmt_modify", property = "gmtModify"),
+            @Result(column = "view_count", property = "viewCount"),
+            @Result(column = "comment_count", property = "commentCount"),
+            @Result(column = "like_count", property = "likeCount"),
+    })
+    List<Question> findMyQuestionByPage(@Param("userId")int userId, @Param("startIndex")int startIndex, @Param("size")int size);
+
+    @Select("select count(*) from question where creator = #{userId}")
+    int findAllMyQestion(@Param("userId")int userId);
 }

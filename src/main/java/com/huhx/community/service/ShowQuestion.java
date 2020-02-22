@@ -22,10 +22,29 @@ public class ShowQuestion {
     private QuestionMapper questionMapper;
 
     //完成PageInfoDTO对象的封装
-    public PageInfoDTO findQuestionByPage(int page, int size){
+    public PageInfoDTO findAllQuestionByPage(int page, int size){
         int starIndex = (page - 1) * size;
-        List<Question> questions = questionMapper.findByPage(starIndex, size);
+        List<Question> questions = questionMapper.findAllQuestionByPage(starIndex, size);
         int totalCount = questionMapper.findAll();
+        List<QuestionDTO> questionDTOs = new LinkedList<>();
+        for (Question question : questions) {
+            User user = userMapper.findById(question.getCreator());
+            QuestionDTO questionDTO = new QuestionDTO();
+            BeanUtils.copyProperties(question, questionDTO);
+            questionDTO.setUser(user);
+            questionDTOs.add(questionDTO);
+        }
+        PageInfoDTO pageInfoDTO = new PageInfoDTO();
+        pageInfoDTO.setQuestions(questionDTOs);
+
+        pageInfoDTO.setPageInfo(totalCount, page, size);
+        return pageInfoDTO;
+    }
+
+    public PageInfoDTO findMyQuestionByPage(int userId, int page, int size){
+        int starIndex = (page - 1) * size;
+        List<Question> questions = questionMapper.findMyQuestionByPage(userId, starIndex, size);
+        int totalCount = questionMapper.findAllMyQestion(userId);
         List<QuestionDTO> questionDTOs = new LinkedList<>();
         for (Question question : questions) {
             User user = userMapper.findById(question.getCreator());

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${nowPage}"></title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/css/index.css">
+    <script src="/js/jquery-3.4.1.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+
+</head>
+<body style="background: #efefef">
+<div th:insert="~{navigation :: nav}"></div>
+<div class="container-fluid" style="margin: 50px;background: white">
+    <div class="row">
+        <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+            <h2>
+                <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+                <span th:text="${nowPage}"></span>
+            </h2>
+            <hr>
+
+            <!--这里是要循环展示的数据（这里要改成对应栏目的查询结果）-->
+            <div class="media" th:each="question : ${pageInfo.questions}">
+                <div class="media-left media-middle">
+                    <a href="#">
+                        <img class="media-object img-rounded"
+                             th:src="${question.user.avatarUrl}"
+                             width="38px" height="38px">
+                    </a>
+                </div>
+                <div class="media-body">
+                    <h4 class="media-heading" th:text="${question.title}"></h4>
+                    <span th:text="${question.description}"></span><br>
+                    <span class="text_desc">
+                            <span th:text="${question.commentCount}"></span> 个评论 •
+                            <span th:text="${question.viewCount}"></span> 次浏览 •
+                            <span th:text="${#dates.format(question.gmtCreat, 'yyyy年-MM月-dd日')}"></span>
+                        </span>
+                </div>
+            </div>
+            <nav aria-label="Page navigation" style="float: right" th:if="${pageInfo.totalCount != 1}">
+                <ul class="pagination">
+                    <li th:if="${pageInfo.showFirstPage}">
+                        <a th:href="@{/profile/{section}(section=${section},page=1)}" aria-label="First">
+                            <span aria-hidden="true">&laquo;&laquo;</span>
+                        </a>
+                    </li>
+                    <li th:if="${pageInfo.showPre}">
+                        <a th:href="@{/profile/{section}(section=${section},page=${pageInfo.page - 1})}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li th:each="page : ${pageInfo.pages}" th:class="${pageInfo.page == page} ? 'active' : ''">
+                        <a th:href="@{/profile/{section}(section=${section},page=${page})}" th:text="${page}"></a>
+                    </li>
+                    <li th:if="${pageInfo.showNext}">
+                        <a th:href="@{/profile/{section}(section=${section},page=${pageInfo.page + 1})}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                    <li th:if="${pageInfo.showEndPage}">
+                        <a th:href="@{/profile/{section}(section=${section}, page=${pageInfo.totalPage})}" aria-label="End">
+                            <span aria-hidden="true">&raquo;&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+            <div class="list-group" style="margin-top: 30px">
+                <a href="/profile/questions" th:class="${nowPage} == '我的问题' ? 'list-group-item active' : 'list-group-item'">我的问题</a>
+                <a href="/profile/replies" th:class="${nowPage} == '我的回复' ? 'list-group-item active' : 'list-group-item'">我的回复</a>
+                <a href="/profile/messages" th:class="${nowPage} == '我的消息' ? 'list-group-item active' : 'list-group-item'"><span class="badge">14</span>我的消息</a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
