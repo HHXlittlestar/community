@@ -29,7 +29,7 @@
                         </a>
                     </div>
                     <div class="media-body">
-                        <h4 class="media-heading" th:text="${question.title}"></h4>
+                        <a th:href="@{'/article/' + ${question.id}}"><h4 class="media-heading" th:text="${question.title}"></h4></a>
                         <span th:text="${question.description}"></span><br>
                         <span class="text_desc">
                             <span th:text="${question.commentCount}"></span> 个评论 •
@@ -38,7 +38,7 @@
                         </span>
                     </div>
                 </div>
-                <nav aria-label="Page navigation" style="float: right">
+                <nav aria-label="Page navigation" style="float: right" th:if="${pageInfo.totalCount != 1}">
                     <ul class="pagination">
                         <li th:if="${pageInfo.showFirstPage}">
                             <a th:href="@{/(page=1)}" aria-label="First">

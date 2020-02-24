@@ -2,9 +2,9 @@ package com.huhx.community.controller;
 
 import com.huhx.community.dto.AccessTokenDTO;
 import com.huhx.community.dto.GithubUser;
-import com.huhx.community.mapper.UserMapper;
 import com.huhx.community.model.User;
 import com.huhx.community.provider.GithubProvider;
+import com.huhx.community.service.UserService;
 import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,7 +25,8 @@ public class AuthorizeController {
     @Autowired
     private AccessTokenDTO accessTokenDTO;
     @Autowired
-    private UserMapper userMapper;
+    private UserService userService;
+
     @Value("${github.client.id}")
     private String clientID;
     @Value("${github.client.secret}")
@@ -53,15 +54,15 @@ public class AuthorizeController {
         String accessToken = githubProvider.getAccessToken(accessTokenDTO);
         GithubUser githubUser = githubProvider.getUser(accessToken);
 
+        //如果返回的User信息不为空，则先检查数据库中是否存在该用户信息，account_id是用户的唯一标识
+        //如果存在，则将用户的信息更新，如果不存在则插入
         if(githubUser != null){
             User user = new User();
             user.setName(githubUser.getName());
-            user.setAccountID(String.valueOf(githubUser.getID()));
+            user.setAccountId(String.valueOf(githubUser.getID()));
             user.setToken(UUID.randomUUID().toString());
-            user.setGmtCreat(System.currentTimeMillis());
-            user.setGmtModify(user.getGmtCreat());
             user.setAvatarUrl(githubUser.getAvatarUrl());
-            userMapper.insert(user);
+            userService.creatorUpdate(user);
             response.addCookie(new Cookie("token", user.getToken()));
             return "redirect:/";
         }else{
