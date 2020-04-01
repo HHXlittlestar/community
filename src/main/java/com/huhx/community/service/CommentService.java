@@ -77,6 +77,7 @@ public class CommentService {
         example.createCriteria()
                 .andParentIdEqualTo(id)
                 .andTypeEqualTo(type.getType());
+        example.setOrderByClause("gmt_creat desc");
         List<Comment> comments = commentMapper.selectByExample(example);
 
         if (comments.size() == 0) {

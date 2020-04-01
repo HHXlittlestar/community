@@ -11,6 +11,15 @@
     <script src="/js/bootstrap.min.js"></script>
 
 </head>
+<script type="application/javascript">
+    window.onload = function(){
+        var close = localStorage.getItem("closable");
+        if (close == "true"){
+            localStorage.removeItem("closable");
+            window.close();
+        }
+    }
+</script>
 <body style="background: #efefef">
     <div th:insert="~{navigation :: nav}"></div>
     <div class="container-fluid" style="margin: 50px;background: white">

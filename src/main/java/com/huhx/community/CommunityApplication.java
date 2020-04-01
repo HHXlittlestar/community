@@ -8,9 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 //加上这个让Mybatis去下面这个包中去扫描Dao层的Mapper
 @MapperScan("com.huhx.community.mapper")
 public class CommunityApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(CommunityApplication.class, args);
     }
-
 }
