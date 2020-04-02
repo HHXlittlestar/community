@@ -25,8 +25,10 @@ public class ArticleController {
         QuestionDTO questionDTO = questionService.getQuestionById(id);
         questionService.incView(id);
         List<CommentDTO> comments = commentService.findAllComments(id, CommentTypeEnum.QUESTION);
+        List<QuestionDTO> relatedQuestions = questionService.findRelatedQuestion(questionDTO);
         model.addAttribute("questionDTO", questionDTO);
         model.addAttribute("comments", comments);
+        model.addAttribute("relatedQuestions", relatedQuestions);
         return "article";
     }
 

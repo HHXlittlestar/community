@@ -53,8 +53,9 @@ public class QuestionExample {
      * This method corresponds to the database table QUESTION
      *
      * @mbg.generated Mon Feb 24 17:44:54 CST 2020
+     * @param gmt_creat_desc
      */
-    public String getOrderByClause() {
+    public String getOrderByClause(String gmt_creat_desc) {
         return orderByClause;
     }
 

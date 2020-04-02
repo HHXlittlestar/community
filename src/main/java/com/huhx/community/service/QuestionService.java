@@ -10,13 +10,16 @@ import com.huhx.community.mapper.UserMapper;
 import com.huhx.community.model.Question;
 import com.huhx.community.model.QuestionExample;
 import com.huhx.community.model.User;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class QuestionService {
@@ -47,7 +50,9 @@ public class QuestionService {
     //查找所有的问题
     public PageInfoDTO findAllQuestionByPage(int page, int size){
         int starIndex = (page - 1) * size;
-        List<Question> questions = questionMapper.selectByExampleWithRowbounds(new QuestionExample(), new RowBounds(starIndex, size));
+        QuestionExample questionExample = new QuestionExample();
+        questionExample.setOrderByClause("gmt_creat desc");
+        List<Question> questions = questionMapper.selectByExampleWithRowbounds(questionExample, new RowBounds(starIndex, size));
         int totalCount = (int)questionMapper.countByExample(new QuestionExample());
         PageInfoDTO pageInfoDTO = getPageInfoDTO(questions);
         pageInfoDTO.setPageInfo(totalCount, page, size);
@@ -58,6 +63,7 @@ public class QuestionService {
     public PageInfoDTO findMyQuestionByPage(Long userId, int page, int size){
         int starIndex = (page - 1) * size;
         QuestionExample example = new QuestionExample();
+        example.setOrderByClause("gmt_creat desc");
         example.createCriteria().andCreatorEqualTo(userId);
         List<Question> questions = questionMapper.selectByExampleWithRowbounds(example, new RowBounds(starIndex, size));
         int totalCount = (int)questionMapper.countByExample(new QuestionExample());
@@ -111,5 +117,21 @@ public class QuestionService {
         question.setId(id);
         question.setViewCount(1);
         questionExtMapper.incView(question);
+    }
+
+    public List<QuestionDTO> findRelatedQuestion(QuestionDTO queryDTO) {
+        Long id = queryDTO.getId();
+        String[] tags = StringUtils.split(queryDTO.getTag(), ",");
+        String tag = Arrays.stream(tags).collect(Collectors.joining("|"));
+        Question question = new Question();
+        question.setId(id);
+        question.setTag(tag);
+        List<Question> questions = questionExtMapper.findRelatedQuestion(question);
+        List<QuestionDTO> questionDTOS = questions.stream().map(q -> {
+            QuestionDTO questionDTO = new QuestionDTO();
+            BeanUtils.copyProperties(q, questionDTO);
+            return questionDTO;
+        }).collect(Collectors.toList());
+        return questionDTOS;
     }
 }
