@@ -1,7 +1,9 @@
 package com.huhx.community.controller;
 
 import com.huhx.community.dto.CommentCreateDTO;
+import com.huhx.community.dto.CommentDTO;
 import com.huhx.community.dto.ResultDTO;
+import com.huhx.community.enums.CommentTypeEnum;
 import com.huhx.community.exception.CustomizeErrorCode;
 import com.huhx.community.model.Comment;
 import com.huhx.community.model.User;
@@ -9,12 +11,10 @@ import com.huhx.community.service.CommentService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Controller
 public class CommentController {
@@ -41,5 +41,11 @@ public class CommentController {
         comment.setLikeCount(0L);
         commentService.insert(comment);
         return ResultDTO.okOf();
+    }
+    @ResponseBody
+    @RequestMapping(value = "/comment/{id}", method = RequestMethod.GET)
+    public ResultDTO subComment(@PathVariable("id")Long id){
+        List<CommentDTO> comments = commentService.findAllComments(id, CommentTypeEnum.COMMENT);
+        return ResultDTO.okOf(comments);
     }
 }

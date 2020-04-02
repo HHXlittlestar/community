@@ -5,7 +5,64 @@
 function collapseComments(e){
     var id = e.getAttribute("data-id");
     var comment = $("#comment-" + id);
-    comment.addClass("in");
+    //用于判断是折叠还是展开的状态
+    var status = e.getAttribute("collapse_status");
+    if (status){
+        //如果这个状态不为空，证明已经展开了，需要折叠
+        comment.removeClass("in");
+        e.removeAttribute("collapse_status");
+        e.classList.remove("active");
+    }else {
+        //如果没有这个状态，则证明现在是折叠状态，需要展开，此时先从数据库获取二级评论的数据
+        var subCommentContainer = $("#comment-" + id);
+        if (subCommentContainer.children().length != 1){
+            comment.addClass("in");
+            e.setAttribute("collapse_status", "in");
+            e.classList.add("active");
+        }else{
+            $.getJSON( "/comment/" + id, function( data ) {
+                $.each(data.data.reverse(), function (index, comment) {
+                    var mediaLeftElement = $("<div/>", {"class": "media-left"
+                    }).append($("<img/>", {
+                        "class": "media-object img-rounded",
+                        "src": comment.user.avatarUrl
+                    }));
+                    var mediaBodyElement = $("<div/>", {
+                        "class": "media-body"
+                    }).append($("<h5/>", {
+                        "class": "media-heading",
+                        "html": comment.user.name
+                    })).append($("<div/>", {
+                        "html": comment.content
+                    })).append($("<div/>", {
+                        "class": "menu"
+                    }).append($("<span/>", {
+                        "class": "pull-right",
+                        "html": comment.gmtCreat
+                    })));
+                    var mediaElement = $("<div/>", {
+                        "class": "media"
+                    }).append(mediaLeftElement).append(mediaBodyElement);
+                    var commentElement = $("<div/>", {
+                        "class": "col-lg-12 col-md-12 col-sm-12 col-xs-12 comments"
+                    }).append(mediaElement);
+                    subCommentContainer.prepend(commentElement);
+                })
+            });
+            comment.addClass("in");
+            e.setAttribute("collapse_status", "in");
+            e.classList.add("active");
+        }
+    }
+}
+
+/**
+ * 进行二级评论
+ */
+function subComment(e) {
+    var id = e.getAttribute("data-id");
+    var content = $("#input-" + id).val();
+    comment2target(id, 2, content);
 }
 function post() {
     //回复的问题编号

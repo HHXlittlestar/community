@@ -66,8 +66,12 @@
                                       th:text="${#dates.format(comment.gmtCreat,'yyyy-MM-dd')}"></span>
                             </div>
                             <!--二级评论-->
-                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 collapse" th:id="${'comment-'+comment.id}">
-                                二级评论
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 collapse sub-comments" th:id="${'comment-'+comment.id}">
+                                <div class="col-lg-12 col-md-12 col-sm-12">
+                                    <input type="text" class="form-control" placeholder="评论一下..." th:id="${'input-' + comment.id}">
+                                    <!--二级评论的按钮，点击也要发送一条ajax请求，将评论添加进数据库，但是要注意评论的type是comment-->
+                                    <button type="button" class="btn btn-success pull-right" onclick="subComment(this)" th:data-id="${comment.id}">评论</button>
+                                </div>
                             </div>
                         </div>
                     </div>
