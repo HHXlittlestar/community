@@ -1,9 +1,11 @@
 package com.huhx.community.controller;
 
+import com.huhx.community.cache.TagCache;
 import com.huhx.community.mapper.QuestionMapper;
 import com.huhx.community.model.Question;
 import com.huhx.community.model.User;
 import com.huhx.community.service.QuestionService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,7 +25,10 @@ public class PublishController {
     private QuestionService questionService;
 
     @GetMapping("/publish")
-    public String publish(){return "publish";}
+    public String publish(Model model) {
+        model.addAttribute("tagDTOS", TagCache.get());
+        return "publish";
+    }
 
     @PostMapping("/publish")
     public String doPublish(@RequestParam(name="title")String title,
@@ -37,6 +42,14 @@ public class PublishController {
         model.addAttribute("description", description);
         model.addAttribute("tag", tag);
         model.addAttribute("id", id);
+
+        //用户是否登录？
+        User user = (User)request.getSession().getAttribute("user");
+        if(user == null){
+            model.addAttribute("error", "用户未登陆");
+            return "publish";
+        }
+
         //判断用户填写的消息是否为空
         if(title == null || title == ""){
             model.addAttribute("error", "题目不能为空！");
@@ -50,16 +63,14 @@ public class PublishController {
             model.addAttribute("error", "标签不能为空！");
             return "publish";
         }
-
-        //将用户提交的问题存入数据库
-        User user = (User)request.getSession().getAttribute("user");
-        if(user == null){
-            model.addAttribute("error", "用户未登陆");
+        String invalid = TagCache.invalidTag(tag);
+        if (StringUtils.isNotBlank(invalid)){
+            model.addAttribute("error", "含有非法的tag");
             return "publish";
         }
 
+        //将用户提交的问题存入数据库
         Question question = new Question();
-
         question.setTitle(title);
         question.setDescription(description);
         question.setCreator(user.getId());
@@ -85,6 +96,7 @@ public class PublishController {
             model.addAttribute("description", question.getDescription());
             model.addAttribute("tag", question.getTag());
             model.addAttribute("id", question.getId());
+            model.addAttribute("tagDTOS", TagCache.get());
         }
 
         return "publish";

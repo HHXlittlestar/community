@@ -57,6 +57,27 @@ function collapseComments(e){
 }
 
 /**
+ * 展开选取标签页
+ */
+function showSelectTag() {
+    $("#select-tag").show();
+}
+
+function selectTag(e) {
+    var value = e.getAttribute("data-tag");
+    var previous = $("#tag").val();
+    //如果在原来的值里找不到当前点选的标签值，才加入标签
+    if (previous.indexOf(value) == -1) {
+        if (previous) {
+            //如果前值不为空，则在后边追加逗号与值
+            $("#tag").val(previous + ',' + value);
+        } else {
+            //如果前值为空，则直接追加当前值
+            $("#tag").val(value);
+        }
+    }
+}
+/**
  * 进行二级评论
  */
 function subComment(e) {
