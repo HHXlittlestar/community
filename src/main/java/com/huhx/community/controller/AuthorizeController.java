@@ -56,7 +56,7 @@ public class AuthorizeController {
 
         //如果返回的User信息不为空，则先检查数据库中是否存在该用户信息，account_id是用户的唯一标识
         //如果存在，则将用户的信息更新，如果不存在则插入
-        if(githubUser != null){
+        if(githubUser != null && githubUser.getID() != null){
             User user = new User();
             user.setName(githubUser.getName());
             user.setAccountId(String.valueOf(githubUser.getID()));

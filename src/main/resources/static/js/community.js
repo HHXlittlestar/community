@@ -23,8 +23,8 @@ function collapseComments(e){
             $.getJSON( "/comment/" + id, function( data ) {
                 $.each(data.data.reverse(), function (index, comment) {
                     var mediaLeftElement = $("<div/>", {"class": "media-left"
-                    }).append($("<img/>", {
-                        "class": "media-object img-rounded",
+                    }).append($("<images/>", {
+                        "class": "media-object images-rounded",
                         "src": comment.user.avatarUrl
                     }));
                     var mediaBodyElement = $("<div/>", {

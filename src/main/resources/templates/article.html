@@ -7,9 +7,13 @@
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="/css/community.css">
+    <link rel="stylesheet" href="/css/editormd.preview.min.css"/>
     <script src="/js/jquery-3.4.1.js"></script>
     <script src="/js/bootstrap.min.js"></script>
     <script src="/js/community.js"></script>
+    <script src="/js/editormd.min.js"></script>
+    <script src="/js/lib/marked.min.js"></script>
+    <script src="/js/lib/prettify.min.js"></script>
 </head>
 <body style="background: #efefef">
 <!--导航栏-->
@@ -30,7 +34,14 @@
             </em>
             <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             <!--文章内容-->
-            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" th:text="${questionDTO.description}"></div>
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="markdown-view">
+                <textarea style="display:none;" th:text="${questionDTO.description}"></textarea>
+            </div>
+            <script type="text/javascript">
+                $(function() {
+                    var testView = editormd.markdownToHTML("markdown-view");
+                });
+            </script>
             <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             <!--标签展示-->
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top: -12px; margin-bottom: -10px">
@@ -139,7 +150,7 @@
             <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <h4>站长微信</h4>
-                <img src="/img/weChat.jpg" class="img-thumbnail question-wechat">
+                <img src="/images/weChat.jpg" class="img-thumbnail question-wechat">
             </div>
             <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
