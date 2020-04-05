@@ -22,9 +22,9 @@
 <div class="container-fluid" style="margin: 50px;background: white">
     <div class="row">
         <!--左侧边栏-->
-        <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12" style="border-right: 1px solid;border-color: black">
+        <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
             <!--文章标题-->
-            <h3 th:text="${questionDTO.title}"></h3>
+            <h3 th:text="${questionDTO.title}" style="margin-top: 10px"></h3>
             <!--文章概览信息-->
             <em class="text-color-999">
                 作者 <a class="aw-user-name" href="#" th:text="${questionDTO.user.name}"></a>
@@ -32,7 +32,7 @@
                 | <span id="read-time">预计阅读时间：5分钟</span>
                 | 阅读数：<span th:text="${questionDTO.viewCount}"></span>
             </em>
-            <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding: 0px; margin-top: 1px; margin-bottom: 1px">
             <!--文章内容-->
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="markdown-view">
                 <textarea style="display:none;" th:text="${questionDTO.description}"></textarea>
@@ -42,15 +42,15 @@
                     var testView = editormd.markdownToHTML("markdown-view");
                 });
             </script>
-            <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding: 0px; margin-top: 1px">
             <!--标签展示-->
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top: -12px; margin-bottom: -10px">
-                <span class="label label-info" style="margin-left: 10px" th:each="tag : ${questionDTO.tag.split(',')}">
+                <span class="label label-info" th:each="tag : ${questionDTO.tag.split(',')}">
                     <span class="glyphicon glyphicon-tags"></span>
-                    <span class="lable label-info question-tag" th:text="${tag}"></span>
+                    <span class="lable label-info question-tag" style="font-size: 12px" th:text="${tag}"></span>
                 </span>
             </div>
-            <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding: 0px; margin-bottom: 1px">
             <!--编辑及其他操作按钮-->
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <a th:href="@{'/publish/' + ${questionDTO.id}}" class="text-color-999">
@@ -132,39 +132,35 @@
         <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <h4 style="margin-top: 30px">发起人：</h4>
-                <dl>
-                    <dt class="pull-left aw-border-radius-5">
-                        <a href="#">
-                            <img class="media-object img-rounded"
-                                 th:src="${questionDTO.user.avatarUrl}"
-                                 width="32px" height="32px">
-                        </a>
-                    </dt>
-                    <dd class="pull-left">
-                        <a class="aw-user-name" href="#" data-id="1" th:text="${questionDTO.user.name}"></a>
-                        <p>今晚打老虎。</p>
-                    </dd>
-                </dl>
+                <div class="media-left media-middle">
+                    <a href="#">
+                        <img class="media-object img-rounded"
+                             th:src="${questionDTO.user.avatarUrl}"
+                             width="38px" height="38px">
+                    </a>
+                </div>
+                <div class="media-body">
+                    <h4 class="media-heading" th:text="${questionDTO.user.name}"></h4>
+                </div>
             </div>
             <!--站长推荐-->
-            <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding: 0px">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <h4>站长微信</h4>
                 <img src="/images/weChat.jpg" class="img-thumbnail question-wechat">
             </div>
-            <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding: 0px">
                 <h4>相关问题</h4>
                 <ul class="question-related">
-                    <li th:each="related : ${relatedQuestions}">
-                        <a th:href="@{'/article/' + ${related.id}}" th:text="${related.title}"></a>
+                    <li th:each="related : ${relatedQuestions}" style="margin: 5px">
+                        <a th:href="@{'/article/' + ${related.id}}" th:text="${related.title}" style="font-size: medium"></a>
                     </li>
                 </ul>
             </div>
-
         </div>
     </div>
 </div>
+<div th:insert="~{footer :: foot}"></div>
 </body>
 </html>

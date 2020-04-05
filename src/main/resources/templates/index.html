@@ -29,7 +29,7 @@
                 <hr>
 
                 <!--这里是要循环展示的数据-->
-                <div class="media" th:each="question : ${pageInfo.questions}">
+                <div class="media" th:each="question : ${pageInfo.datas}">
                     <div class="media-left media-middle">
                         <a href="#">
                             <img class="media-object img-rounded"
@@ -39,7 +39,6 @@
                     </div>
                     <div class="media-body">
                         <a th:href="@{'/article/' + ${question.id}}"><h4 class="media-heading" th:text="${question.title}"></h4></a>
-                        <span th:text="${question.description}"></span><br>
                         <span class="text_desc">
                             <span th:text="${question.commentCount}"></span> 个评论 •
                             <span th:text="${question.viewCount}"></span> 次浏览 •
@@ -50,25 +49,25 @@
                 <nav aria-label="Page navigation" style="float: right" th:if="${pageInfo.totalCount != 1}">
                     <ul class="pagination">
                         <li th:if="${pageInfo.showFirstPage}">
-                            <a th:href="@{/(page=1)}" aria-label="First">
+                            <a th:href="@{/(page=1, search=${search})}" aria-label="First">
                                 <span aria-hidden="true">&laquo;&laquo;</span>
                             </a>
                         </li>
                         <li th:if="${pageInfo.showPre}">
-                            <a th:href="@{/(page=${pageInfo.page - 1})}" aria-label="Previous">
+                            <a th:href="@{/(page=${pageInfo.page - 1}, search=${search})}" aria-label="Previous">
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
                         </li>
                         <li th:each="page : ${pageInfo.pages}" th:class="${pageInfo.page == page} ? 'active' : ''">
-                            <a th:href="@{/(page=${page})}" th:text="${page}"></a>
+                            <a th:href="@{/(page=${page}, search=${search})}" th:text="${page}"></a>
                         </li>
                         <li th:if="${pageInfo.showNext}">
-                            <a th:href="@{/(page=${pageInfo.page + 1})}" aria-label="Next">
+                            <a th:href="@{/(page=${pageInfo.page + 1}, search=${search})}" aria-label="Next">
                                 <span aria-hidden="true">&raquo;</span>
                             </a>
                         </li>
                         <li th:if="${pageInfo.showEndPage}">
-                            <a th:href="@{/(page=${pageInfo.totalPage})}" aria-label="End">
+                            <a th:href="@{/(page=${pageInfo.totalPage}, search=${search})}" aria-label="End">
                                 <span aria-hidden="true">&raquo;&raquo;</span>
                             </a>
                         </li>
@@ -80,5 +79,6 @@
             </div>
         </div>
     </div>
+    <div th:insert="~{footer :: foot}"></div>
 </body>
 </html>

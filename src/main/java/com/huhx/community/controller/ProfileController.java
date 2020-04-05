@@ -2,6 +2,7 @@ package com.huhx.community.controller;
 
 import com.huhx.community.dto.PageInfoDTO;
 import com.huhx.community.model.User;
+import com.huhx.community.service.NotificationService;
 import com.huhx.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,6 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 public class ProfileController {
     @Autowired
     private QuestionService questionService;
+    @Autowired
+    private NotificationService notificationService;
 
     @GetMapping("/profile/{action}")
     public String profile(@PathVariable(name = "action") String action,
@@ -42,13 +45,11 @@ public class ProfileController {
             model.addAttribute("pageInfo", pageInfoDTO);
         }else{
             //如果是messages，就显示我的消息
-            PageInfoDTO pageInfoDTO = questionService.findMyQuestionByPage(user.getId(), page, size);
+            PageInfoDTO pageInfoDTO = notificationService.list(user.getId(), page, size);
             model.addAttribute("nowPage", "我的消息");
             model.addAttribute("section", "messages");
             model.addAttribute("pageInfo", pageInfoDTO);
         }
-
-
         return "profile";
     }
 }

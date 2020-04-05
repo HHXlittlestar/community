@@ -21,12 +21,12 @@ public class IndexController {
     public String index(HttpServletRequest request,
                         Model model,
                         @RequestParam(value = "page", defaultValue = "1") Integer page,
-                        @RequestParam(value = "size", defaultValue = "5") Integer size){
+                        @RequestParam(value = "size", defaultValue = "5") Integer size,
+                        @RequestParam(value = "search", required = false) String search){
 
-
-        //在返回首页之前进行话题内容查询，并携带到主页去显示
-        PageInfoDTO pageInfo = questionService.findAllQuestionByPage(page, size);
+        PageInfoDTO pageInfo = questionService.findAllQuestionByPage(search, page, size);
         model.addAttribute("pageInfo", pageInfo);
+        model.addAttribute("search", search);
         return "index.html";
     }
 
@@ -40,5 +40,14 @@ public class IndexController {
         response.addCookie(cookie);
         request.getSession().removeAttribute("user");
         return "redirect:/";
+    }
+
+    @GetMapping("/login")
+    public String login(){
+        return "login";
+    }
+    @GetMapping("/register")
+    public String register(){
+        return "register";
     }
 }

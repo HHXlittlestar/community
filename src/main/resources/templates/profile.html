@@ -22,8 +22,8 @@
             </h2>
             <hr>
 
-            <!--这里是要循环展示的数据（这里要改成对应栏目的查询结果）-->
-            <div class="media" th:each="question : ${pageInfo.questions}">
+            <!--这里是要循环展示的数据（我的问题）-->
+            <div class="media" th:each="question : ${pageInfo.datas}" th:if="${section == 'questions'}">
                 <div class="media-left media-middle">
                     <a href="#">
                         <img class="media-object img-rounded"
@@ -47,6 +47,21 @@
                     </span>
                 </div>
             </div>
+            <!--我的消息-->
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" th:if="${section == 'messages'}">
+                <div class="media" th:each="notification : ${pageInfo.datas}">
+                    <div class="media-body">
+                        <p class="media-heading">
+                            <span th:text="${notification.notifierName +' ' + notification.typeName + ' '}"></span>
+                            <a th:href="@{'/notification/'+ ${notification.id}}"
+                               th:text="${notification.outerTitle}">
+                            </a>
+                            <span class="label label-danger" th:if="${notification.status == 0}">未读</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <!--分页栏-->
             <nav aria-label="Page navigation" style="float: right" th:if="${pageInfo.totalCount != 1}">
                 <ul class="pagination">
                     <li th:if="${pageInfo.showFirstPage}">
@@ -79,10 +94,14 @@
             <div class="list-group" style="margin-top: 30px">
                 <a href="/profile/questions" th:class="${nowPage} == '我的问题' ? 'list-group-item active' : 'list-group-item'">我的问题</a>
                 <a href="/profile/replies" th:class="${nowPage} == '我的回复' ? 'list-group-item active' : 'list-group-item'">我的回复</a>
-                <a href="/profile/messages" th:class="${nowPage} == '我的消息' ? 'list-group-item active' : 'list-group-item'"><span class="badge">14</span>我的消息</a>
+                <a href="/profile/messages" th:class="${nowPage} == '我的消息' ? 'list-group-item active' : 'list-group-item'">
+                    <span class="badge" th:text="${session.unreadCount}"></span>
+                    我的消息
+                </a>
             </div>
         </div>
     </div>
 </div>
+<div th:insert="~{footer :: foot}"></div>
 </body>
 </html>

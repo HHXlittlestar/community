@@ -7,7 +7,7 @@ import java.util.List;
 
 //分页查询的时候服务端向网页回传的信息
 @Data
-public class PageInfoDTO {
+public class PageInfoDTO<T> {
 
     private boolean showNext;//当前页面是否含有下一页的按钮
     private boolean showEndPage;//当前页面是否含有直达最后一页的按钮
@@ -17,7 +17,7 @@ public class PageInfoDTO {
     private int totalPage;//计算出来的总的页数
     private int page;//当前的页码（用于前端高亮页码使用）
     private List<Integer> pages;//用于存放当前页需要显示的页码
-    private List<QuestionDTO> questions;//用于存放查找到的内容
+    private List<T> datas;//用于存放查找到的内容
 
 
     public void setPageInfo(int totalCount, int page, int size) {

@@ -3,6 +3,8 @@ package com.huhx.community.Interceptor;
 import com.huhx.community.mapper.UserMapper;
 import com.huhx.community.model.User;
 import com.huhx.community.model.UserExample;
+import com.huhx.community.service.NotificationService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -11,6 +13,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Component
@@ -18,6 +21,8 @@ public class SecurityInterceptor implements HandlerInterceptor {
 
     @Resource
     private UserMapper userMapper;
+    @Autowired
+    private NotificationService notificationService;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -31,7 +36,10 @@ public class SecurityInterceptor implements HandlerInterceptor {
                     example.createCriteria().andTokenEqualTo(token);
                     List<User> users = userMapper.selectByExample(example);
                     if (users.size() != 0){
+                        HttpSession session = request.getSession();
                         request.getSession().setAttribute("user", users.get(0));
+                        Long unreadCount = notificationService.unreadCount(users.get(0).getId());
+                        session.setAttribute("unreadCount", unreadCount);
                     }
                     break;
                 }

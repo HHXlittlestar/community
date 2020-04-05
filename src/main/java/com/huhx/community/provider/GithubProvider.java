@@ -23,7 +23,6 @@ public class GithubProvider {
         try {
             response = client.newCall(request).execute();
             String string = response.body().string();
-            /*access_token=4449c53cfb427acfb7e38e40104890a1533890aa&scope=user&token_type=bearer*/
             String tokenStr = string.split("&")[0];
             String token = tokenStr.split("=")[1];
             return token;

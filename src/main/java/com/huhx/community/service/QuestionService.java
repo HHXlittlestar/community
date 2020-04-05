@@ -2,6 +2,7 @@ package com.huhx.community.service;
 
 import com.huhx.community.dto.PageInfoDTO;
 import com.huhx.community.dto.QuestionDTO;
+import com.huhx.community.dto.QuestionQueryDTO;
 import com.huhx.community.exception.CustomizeErrorCode;
 import com.huhx.community.exception.CustomizeException;
 import com.huhx.community.mapper.QuestionExtMapper;
@@ -41,19 +42,27 @@ public class QuestionService {
             questionDTO.setUser(user);
             questionDTOs.add(questionDTO);
         }
-        PageInfoDTO pageInfoDTO = new PageInfoDTO();
-        pageInfoDTO.setQuestions(questionDTOs);
+        PageInfoDTO<QuestionDTO> pageInfoDTO = new PageInfoDTO<>();
+        pageInfoDTO.setDatas(questionDTOs);
         return pageInfoDTO;
 
     }
 
     //查找所有的问题
-    public PageInfoDTO findAllQuestionByPage(int page, int size){
+    public PageInfoDTO findAllQuestionByPage(String search, int page, int size){
+        if(StringUtils.isNotBlank(search)){
+            String[] searches = StringUtils.split(search, " ");
+            search = Arrays.stream(searches).collect(Collectors.joining("|"));
+        }
         int starIndex = (page - 1) * size;
-        QuestionExample questionExample = new QuestionExample();
-        questionExample.setOrderByClause("gmt_creat desc");
-        List<Question> questions = questionMapper.selectByExampleWithRowbounds(questionExample, new RowBounds(starIndex, size));
-        int totalCount = (int)questionMapper.countByExample(new QuestionExample());
+        QuestionQueryDTO questionQueryDTO = new QuestionQueryDTO();
+        questionQueryDTO.setSearch(search);
+        int totalCount = questionExtMapper.countBySearch(questionQueryDTO);
+
+        questionQueryDTO.setPage(starIndex);
+        questionQueryDTO.setSize(size);
+        List<Question> questions = questionExtMapper.selectBySearchWithRowbounds(questionQueryDTO);
+
         PageInfoDTO pageInfoDTO = getPageInfoDTO(questions);
         pageInfoDTO.setPageInfo(totalCount, page, size);
         return pageInfoDTO;
@@ -71,6 +80,8 @@ public class QuestionService {
         pageInfoDTO.setPageInfo(totalCount, page, size);
         return pageInfoDTO;
     }
+
+    //根据搜索条件查找所有符合的问题
 
     //根据问题的ID查找
     public QuestionDTO getQuestionById(Long id) {
