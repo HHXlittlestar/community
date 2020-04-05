@@ -116,7 +116,7 @@ function comment2target(targetId, type, content) {
                     //如果code为2003，证明当前没有登录，需要进行登录，弹出是否进行登录的确认框
                     var isAccepted = confirm(response.message);
                     if(isAccepted){
-                        window.open("https://github.com/login/oauth/authorize?client_id=9786f3448892035cd7db&redirect_uri=http://localhost:8887/callback&scope=user&state=1")
+                        window.open("https://github.com/login/oauth/authorize?client_id=9786f3448892035cd7db&redirect_uri=" + getRootPath() + "/callback&scope=user&state=1");
                         window.localStorage.setItem("closable", true);
                     }
                 }else{
@@ -126,5 +126,12 @@ function comment2target(targetId, type, content) {
             }
         }
     });
+}
+function getRootPath() {
+    var curWwwPath = window.document.location.href;
+    var pathName = window.document.location.pathname;
+    var pos = curWwwPath.indexOf(pathName);
+    var localhostPath = curWwwPath.substring(0, pos);
+    return localhostPath;
 }
 
